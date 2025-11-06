@@ -5,7 +5,11 @@
 #include <map>
 #include <array>
 #include <list>
+#include <string>
+#include <iostream>
 using namespace std;
+
+const int SIZE = 3;
 
 // Define a function to simulate customer orders, store orders to the supplier, and supplier deliveries
 	// Parameters: map of store data, number of intervals
@@ -14,6 +18,11 @@ using namespace std;
 int main () {
 	// Initialize a map to store the flower shop's data: customers who come in and what they order, flowers currently in
 	// the flower shop inventory, and flowers growing in the supplier's greenhouse.
+	list<string> shopInventory = {"rose", "lily", "lilac", "rose", "sunflower", "iris"};
+	list<string> greenhouseInventory = {"lilac", "sunflower", "tulip"};
+	list<string> customerQueue = {"lily",};
+
+	array<list<string>, SIZE> data = {shopInventory, greenhouseInventory, customerQueue};
 
 	// Open an external file to read initial data about flower shop inventory and greenhouse inventory
 		// If file does not open, print an error and exit
