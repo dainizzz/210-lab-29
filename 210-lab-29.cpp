@@ -49,10 +49,7 @@ int main() {
 	srand(3);
 	// Initialize a map to store the flower shop's data: customers who come in and what they order, flowers currently in
 	// the flower shop inventory, and flowers growing in the supplier's greenhouse.
-	list<string> shopInventory = {};
-	list<string> greenhouseInventory = {};
-	list<string> customerQueue = {};
-	array<list<string>, SIZE> shop1data = {shopInventory, greenhouseInventory, customerQueue};
+	array<list<string>, SIZE> shop1data = {};
 	map<string, array<list<string>, SIZE> > shops;
 
 	shops.insert(make_pair("shop1", shop1data));
@@ -94,16 +91,17 @@ void runSimulation(map<string, array<list<string>, SIZE> >& storeData, int inter
 			// If they arrive, randomly decide what they order
 			string order = getRandomFlower();
 			bool found = false;
-			// If the flowers needed for the customer's order are available, remove the flowers from the shop's
-			// inventory
-			for (auto it = storeData.at("shop1")[0].begin(); it != storeData.at("shop1")[0].end(); ++it) { // TODO: Fix so it's not hardcoded
-				if (*it == order) {
+			auto it = storeData.at("shop1")[0].begin();
+			while (!found && it != storeData.at("shop1")[0].end()) {
+				if (*it == order) { // If the flowers needed for the customer's order are available, remove the flowers from the shop's inventory
 					cout << "\tCustomer ordered " << order << " and 1 " << *it << " was removed from the store's inventory." << endl;
 					storeData.at("shop1")[0].erase(it);
 					found = true;
 					break;
 				}
+				++it;
 			}
+
 			if (!found) {
 				// Otherwise, add the customer to the queue and the flower needed for completing their order to the
 				// end of the supplier's greenhouse list
