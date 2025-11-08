@@ -50,7 +50,7 @@ int main() {
 	// Initialize a map to store the flower shop's data: customers who come in and what they order, flowers currently in
 	// the flower shop inventory, and flowers growing in the supplier's greenhouse.
 	array<list<string>, SIZE> shop1data = {};
-	map<string, array<list<string>, SIZE> > shops;
+	map<string, array<list<string>, SIZE>> shops;
 
 	shops.insert(make_pair("shop1", shop1data));
 
@@ -113,7 +113,7 @@ void runSimulation(map<string, array<list<string>, SIZE> >& storeData, int inter
 
 		// EVENT #2: Randomly decide if a flower in the supplier's greenhouse are ready to deliver (75% chance)
 		if (eventOccurs(75)) {
-			string delivered = storeData.at("shop1")[2].front();
+			string delivered = storeData.at("shop1")[1].front();
 			storeData.at("shop1")[0].push_back(delivered);
 			storeData.at("shop1")[1].pop_front();
 			// If so, add them to the store's inventory
@@ -136,7 +136,7 @@ void runSimulation(map<string, array<list<string>, SIZE> >& storeData, int inter
 		}
 
 		// Wait or pause briefly to simulate the passage of time between intervals
-		//this_thread::sleep_for(chrono::seconds(1));
+		this_thread::sleep_for(chrono::seconds(1));
 	}
 }
 
