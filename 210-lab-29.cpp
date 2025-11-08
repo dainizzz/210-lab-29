@@ -34,7 +34,7 @@ const string flowers[NUM_FLOWERS] = {
 
 // Define a function to simulate customer orders, store orders to the supplier, and supplier deliveries
 // Parameters: map of store data, number of intervals
-void runSimulation(map<string, array<list<string>, SIZE> >, int);
+void runSimulation(map<string, array<list<string>, SIZE> >&, int);
 
 // Returns a randomly selected flower from the flowers array.
 string getRandomFlower();
@@ -64,9 +64,9 @@ int main() {
 		while (infile >> tempLoc) {
 			infile >> tempFlower;
 			if (tempLoc == "shop")
-				shops.at("shop1")[1].push_back(tempFlower);
+				shops.at("shop1")[0].push_back(tempFlower);
 			else
-				shops.at("shop1")[2].push_back(tempFlower);
+				shops.at("shop1")[1].push_back(tempFlower);
 		}
 		infile.close();
 	} else {
@@ -83,7 +83,7 @@ int main() {
 }
 
 // Define simulation function
-void runSimulation(map<string, array<list<string>, SIZE> > storeData, int intervals) {
+void runSimulation(map<string, array<list<string>, SIZE> >& storeData, int intervals) {
 	// TODO: ADD FOR SHOP IN SHOPS
 	// For n number of time periods
 	for (int i = 0; i < intervals; i++) {
@@ -96,10 +96,10 @@ void runSimulation(map<string, array<list<string>, SIZE> > storeData, int interv
 			bool found = false;
 			// If the flowers needed for the customer's order are available, remove the flowers from the shop's
 			// inventory
-			for (auto it = storeData.at("shop1")[1].begin(); it != storeData.at("shop1")[1].end(); ++it) { // TODO: Fix so it's not hardcoded
+			for (auto it = storeData.at("shop1")[0].begin(); it != storeData.at("shop1")[0].end(); ++it) { // TODO: Fix so it's not hardcoded
 				if (*it == order) {
 					cout << "\tCustomer ordered " << order << " and 1 " << *it << " was removed from the store's inventory." << endl;
-					storeData.at("shop1")[1].erase(it);
+					storeData.at("shop1")[0].erase(it);
 					found = true;
 					break;
 				}
@@ -108,29 +108,29 @@ void runSimulation(map<string, array<list<string>, SIZE> > storeData, int interv
 				// Otherwise, add the customer to the queue and the flower needed for completing their order to the
 				// end of the supplier's greenhouse list
 				cout << "\tCustomer ordered " << order << " and it was not in stock. A request has been made to the supplier and the customer has been added to the queue" << endl;
+				storeData.at("shop1")[1].push_back(order);
 				storeData.at("shop1")[2].push_back(order);
-				storeData.at("shop1")[3].push_back(order);
 			}
 		}
 
 		// EVENT #2: Randomly decide if a flower in the supplier's greenhouse are ready to deliver (75% chance)
 		if (eventOccurs(75)) {
 			string delivered = storeData.at("shop1")[2].front();
-			storeData.at("shop1")[1].push_back(delivered);
-			storeData.at("shop1")[2].pop_front();
+			storeData.at("shop1")[0].push_back(delivered);
+			storeData.at("shop1")[1].pop_front();
 			// If so, add them to the store's inventory
 			cout << "\t1 " << delivered << " was added to the store inventory from the greenhouse." << endl;
 		}
 
 		// EVENT #3: If there are customers left in the queue, randomly decide to check if their order can now be made. (50%)
 		if (eventOccurs(50)) {
-			if (!storeData.at("shop1")[3].empty()) {
+			if (!storeData.at("shop1")[2].empty()) {
 				// Give customer their order if it's available
-				for (auto it = storeData.at("shop1")[1].begin(); it != storeData.at("shop1")[1].end(); ++it) { // TODO: Fix so it's not hardcoded
-					if (*it == storeData.at("shop1")[3].front()) {
+				for (auto it = storeData.at("shop1")[0].begin(); it != storeData.at("shop1")[0].end(); ++it) { // TODO: Fix so it's not hardcoded
+					if (*it == storeData.at("shop1")[2].front()) { // If the first customer in the queue's order is in stock
 						cout << "\tCustomer's " << *it << " order was ready and 1 " << *it <<" was removed from the store's inventory." << endl;
-						storeData.at("shop1")[1].erase(it);
-						storeData.at("shop1")[3].pop_front();
+						storeData.at("shop1")[0].erase(it);
+						storeData.at("shop1")[2].pop_front();
 						break;
 					}
 				}
@@ -138,7 +138,7 @@ void runSimulation(map<string, array<list<string>, SIZE> > storeData, int interv
 		}
 
 		// Wait or pause briefly to simulate the passage of time between intervals
-		this_thread::sleep_for(chrono::seconds(1));
+		//this_thread::sleep_for(chrono::seconds(1));
 	}
 }
 
