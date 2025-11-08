@@ -32,6 +32,9 @@ string getRandomFlower();
 // Parameters: an int representing the percent chance of an event occurring
 bool eventOccurs(int);
 
+// Performs a unit test of the runSimulation() function
+void testSimulationEvents();
+
 // Define main function
 int main() {
 	srand(time(0));
@@ -59,6 +62,8 @@ int main() {
 		// If file does not open, print an error and exit
 		cout << "Error opening file." << endl;
 	}
+
+	testSimulationEvents();
 
 	// EVENT #1: Randomly decide if a customer will arrive (75% chance)
 	// EVENT #2: Randomly decide if a flower in the supplier's greenhouse are ready to deliver (25% chance)
@@ -147,4 +152,20 @@ string getRandomFlower() {
 
 bool eventOccurs(int probability) {
 	return rand() % 100 + 1 <= probability;
+}
+
+void testSimulationEvents() {
+	list<string> shopInventory = {"Rose", "Tulip", "Lily",};
+	list<string> greenhouseInventory = {"Chrysanthemum", "Peony", "Hydrangea"};
+	list<string> customerOrderQueue = {"Rose"};
+	array<list<string>, SIZE> testShopData = {shopInventory, greenhouseInventory, customerOrderQueue};
+	map<string, array<list<string>, SIZE> > shops;
+	shops.insert(make_pair("Test Shop", testShopData));
+
+	// PRINT DATA BEFORE
+
+	// Testing each event occurring in an interval to make sure all events work correctly
+	runSimulation(shops, 1, 100, 100, 100);
+
+	// PRINT OUT AFTER
 }
