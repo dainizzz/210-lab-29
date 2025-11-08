@@ -32,7 +32,7 @@ const string flowers[NUM_FLOWERS] = {
 
 // Define a function to simulate customer orders, store orders to the supplier, and supplier deliveries
 // Parameters: map of store data, number of intervals
-void runSimulation(map<string, array<list<string>, SIZE>>, int);
+void runSimulation(map<string, array<list<string>, SIZE> >, int);
 
 // Returns a randomly selected flower from the flowers array.
 string getRandomFlower();
@@ -50,9 +50,9 @@ int main() {
 	list<string> greenhouseInventory = {};
 	list<string> customerQueue = {};
 	array<list<string>, SIZE> shop1data = {shopInventory, greenhouseInventory, customerQueue};
-	map<string, array<list<string>, SIZE>> shops;
+	map<string, array<list<string>, SIZE> > shops;
 
-	shops.insert(make_pair("shop1",shop1data));
+	shops.insert(make_pair("shop1", shop1data));
 
 	// Open an external file to read initial data about flower shop inventory and greenhouse inventory
 	ifstream infile("flower inventory.txt");
@@ -85,28 +85,36 @@ int main() {
 }
 
 // Define simulation function
-void runSimulation(map<string, array<list<string>, SIZE>> storeData, int intervals) {
+void runSimulation(map<string, array<list<string>, SIZE> > storeData, int intervals) {
 	// TODO: ADD FOR SHOP IN SHOPS
 	// For n number of time periods
 	for (int i = 0; i < intervals; i++) {
 		cout << "Interval #" << i + 1 << ':' << endl;
-		// Randomly decide if a customer will arrive (35% chance)
-		if (eventOccurs(50)){
+		// Randomly decide if a customer will arrive (50% chance)
+		if (eventOccurs(50)) {
 			// If they arrive, randomly decide what they order
-				// If the flowers needed for the customer's order are available, remove the flowers from the shop's
-				// inventory
-			// Otherwise, add the customer to the queue and the necessary flowers for completing their order to the
+			string order = getRandomFlower();
+			// If the flowers needed for the customer's order are available, remove the flowers from the shop's
+			// inventory
+			for (auto it = storeData.at("shop1")[1].begin(); it != storeData.at("shop1")[1].end(); ++it) { // TODO: Fix so it's not hardcoded
+				if (*it == order) {
+					cout << "\tCustomer ordered " << order << " and " << *it << " was removed from the store's inventory." << endl;
+					//remove
+				}
+			}
+			// Otherwise, add the customer to the queue and the flower needed for completing their order to the
 			// end of the supplier's greenhouse list
 		}
-		// Randomly decide if flowers in the supplier's greenhouse are ready to deliver
-		if (eventOccurs(30))
-		{
+		// Randomly decide if flowers in the supplier's greenhouse are ready to deliver (30% chance)
+		if (eventOccurs(30)) {
 			// If so, add them to the store's inventory
 		}
-		// If there are customers left in the queue, randomly decide if their order can now be made.
-		if (eventOccurs(20)
+		// If there are customers left in the queue, randomly decide to check if their order can now be made. (70%)
+		if (eventOccurs(70)) {
 			// Give customer their order
-		// Print the changes for this interval, e.g., "Customer ordered {order} and {flowers} were removed from the shop's inventory"
+		}
+
+		// Print the changes for this interval, e.g., "Customer ordered {order} and 1 {flower} was removed from the shop's inventory"
 		// Wait or pause briefly to simulate the passage of time between intervals
 	}
 }
