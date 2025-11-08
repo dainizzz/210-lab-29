@@ -34,8 +34,16 @@ const string flowers[NUM_FLOWERS] = {
 // Parameters: map of store data, number of intervals
 void runSimulation(map<string, array<list<string>, SIZE>>, int);
 
+// Returns a randomly selected flower from the flowers array.
+string getRandomFlower();
+
+// Returns a bool representing whether an event occurs
+// Parameters: an int representing the percent chance of an event occurring
+bool eventOccurs(int);
+
 // Define main function
 int main() {
+	srand(time(0));
 	// Initialize a map to store the flower shop's data: customers who come in and what they order, flowers currently in
 	// the flower shop inventory, and flowers growing in the supplier's greenhouse.
 	list<string> shopInventory = {};
@@ -65,6 +73,7 @@ int main() {
 
 	// Begin a time-based simulation for running the flower shop
 	// for 35 time intervals (i.e. hours shop is open during the week)
+	runSimulation(shops, 35);
 
 	// Read data from file and populate map
 	// For each line, extract the flower's name and whether it goes to the flower shop or the greenhouse
@@ -77,10 +86,12 @@ int main() {
 
 // Define simulation function
 void runSimulation(map<string, array<list<string>, SIZE>> storeData, int intervals) {
+	// TODO: ADD FOR SHOP IN SHOPS
 	// For n number of time periods
 	for (int i = 0; i < intervals; i++) {
 		cout << "Interval #" << i + 1 << ':' << endl;
-		// Randomly decide if a customer will arrive
+		// Randomly decide if a customer will arrive (35% chance)
+		if ()
 			// If they arrive, randomly decide what they order
 				// If the flowers needed for the customer's order are available, remove the flowers from the shop's
 				// inventory
@@ -92,4 +103,13 @@ void runSimulation(map<string, array<list<string>, SIZE>> storeData, int interva
 		// Print the changes for this interval, e.g., "Customer ordered {order} and {flowers} were removed from the shop's inventory"
 		// Wait or pause briefly to simulate the passage of time between intervals
 	}
+}
+
+string getRandomFlower() {
+	int index = rand() % 15;
+	return flowers[index];
+}
+
+bool eventOccurs(int probability) {
+	return rand() % 100 + 1 <= probability;
 }
