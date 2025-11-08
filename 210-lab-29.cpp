@@ -91,15 +91,21 @@ void runSimulation(map<string, array<list<string>, SIZE>> storeData, int interva
 	for (int i = 0; i < intervals; i++) {
 		cout << "Interval #" << i + 1 << ':' << endl;
 		// Randomly decide if a customer will arrive (35% chance)
-		if ()
+		if (eventOccurs(50)){
 			// If they arrive, randomly decide what they order
 				// If the flowers needed for the customer's order are available, remove the flowers from the shop's
 				// inventory
 			// Otherwise, add the customer to the queue and the necessary flowers for completing their order to the
 			// end of the supplier's greenhouse list
+		}
 		// Randomly decide if flowers in the supplier's greenhouse are ready to deliver
+		if (eventOccurs(30))
+		{
 			// If so, add them to the store's inventory
+		}
 		// If there are customers left in the queue, randomly decide if their order can now be made.
+		if (eventOccurs(20)
+			// Give customer their order
 		// Print the changes for this interval, e.g., "Customer ordered {order} and {flowers} were removed from the shop's inventory"
 		// Wait or pause briefly to simulate the passage of time between intervals
 	}
