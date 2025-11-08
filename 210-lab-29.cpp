@@ -11,6 +11,24 @@
 using namespace std;
 
 const int SIZE = 3;
+const int FLOWERS = 15;
+const string flowers[FLOWERS] = {
+"Rose",
+"Tulip",
+"Lily",
+"Carnation",
+"Sunflower",
+"Orchid",
+"Daisy",
+"Chrysanthemum",
+"Peony",
+"Hydrangea",
+"Bluebell",
+"Alstroemeria",
+"Iris",
+"Freesia",
+"Ranunculus",
+};
 
 // Define a function to simulate customer orders, store orders to the supplier, and supplier deliveries
 	// Parameters: map of store data, number of intervals
@@ -19,9 +37,9 @@ const int SIZE = 3;
 int main () {
 	// Initialize a map to store the flower shop's data: customers who come in and what they order, flowers currently in
 	// the flower shop inventory, and flowers growing in the supplier's greenhouse.
-	list<string> shopInventory = {"rose", "lily", "lilac", "rose", "sunflower", "iris"};
-	list<string> greenhouseInventory = {"lilac", "sunflower", "tulip"};
-	list<string> customerQueue = {"lily",};
+	list<string> shopInventory = {};
+	list<string> greenhouseInventory = {};
+	list<string> customerQueue = {};
 
 	array<list<string>, SIZE> data = {shopInventory, greenhouseInventory, customerQueue};
 
@@ -38,10 +56,19 @@ int main () {
 		}
 		infile.close();
 	}else {
-
+		// If file does not open, print an error and exit
+		cout << "Error opening file." << endl;
 	}
 
-		// If file does not open, print an error and exit
+	for (string flower : shopInventory) {
+		cout << flower << " ";
+    }
+
+	for (string flower : greenhouseInventory) {
+		cout << flower << " ";
+	}
+
+	//
 
 	// Begin a time-based simulation for running the flower shop
 	// for 35 time intervals (i.e. hours shop is open during the week)
