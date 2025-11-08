@@ -8,6 +8,8 @@
 #include <list>
 #include <string>
 #include <iostream>
+#include <chrono>
+#include <thread>
 using namespace std;
 
 const int SIZE = 3;
@@ -43,7 +45,8 @@ bool eventOccurs(int);
 
 // Define main function
 int main() {
-	srand(time(0));
+	//srand(time(0));
+	srand(3);
 	// Initialize a map to store the flower shop's data: customers who come in and what they order, flowers currently in
 	// the flower shop inventory, and flowers growing in the supplier's greenhouse.
 	list<string> shopInventory = {};
@@ -74,11 +77,6 @@ int main() {
 	// Begin a time-based simulation for running the flower shop
 	// for 35 time intervals (i.e. hours shop is open during the week)
 	runSimulation(shops, 35);
-
-	// Read data from file and populate map
-	// For each line, extract the flower's name and whether it goes to the flower shop or the greenhouse
-	// Insert flower into the appropriate list in the array for the shop
-	// Close the file
 
 	// End of main function
 	return 0;
@@ -118,8 +116,8 @@ void runSimulation(map<string, array<list<string>, SIZE> > storeData, int interv
 		// EVENT #2: Randomly decide if a flower in the supplier's greenhouse are ready to deliver (75% chance)
 		if (eventOccurs(75)) {
 			string delivered = storeData.at("shop1")[2].front();
-			storeData.at("shop1")[2].pop_front();
 			storeData.at("shop1")[1].push_back(delivered);
+			storeData.at("shop1")[2].pop_front();
 			// If so, add them to the store's inventory
 			cout << "\t1 " << delivered << " was added to the store inventory from the greenhouse." << endl;
 		}
@@ -128,7 +126,6 @@ void runSimulation(map<string, array<list<string>, SIZE> > storeData, int interv
 		if (eventOccurs(50)) {
 			if (!storeData.at("shop1")[3].empty()) {
 				// Give customer their order if it's available
-				bool found = false;
 				for (auto it = storeData.at("shop1")[1].begin(); it != storeData.at("shop1")[1].end(); ++it) { // TODO: Fix so it's not hardcoded
 					if (*it == storeData.at("shop1")[3].front()) {
 						cout << "\tCustomer's " << *it << " order was ready and 1 " << *it <<" was removed from the store's inventory." << endl;
@@ -138,10 +135,10 @@ void runSimulation(map<string, array<list<string>, SIZE> > storeData, int interv
 					}
 				}
 			}
-
 		}
 
 		// Wait or pause briefly to simulate the passage of time between intervals
+		this_thread::sleep_for(chrono::seconds(1));
 	}
 }
 
