@@ -100,7 +100,7 @@ void runSimulation(map<string, array<list<string>, SIZE> > storeData, int interv
 			// inventory
 			for (auto it = storeData.at("shop1")[1].begin(); it != storeData.at("shop1")[1].end(); ++it) { // TODO: Fix so it's not hardcoded
 				if (*it == order) {
-					cout << "\tCustomer ordered " << order << " and " << *it << " was removed from the store's inventory." << endl;
+					cout << "\tCustomer ordered " << order << " and 1 " << *it << " was removed from the store's inventory." << endl;
 					storeData.at("shop1")[1].erase(it);
 					found = true;
 					break;
@@ -115,19 +115,32 @@ void runSimulation(map<string, array<list<string>, SIZE> > storeData, int interv
 			}
 		}
 
-		// EVENT  #2: Randomly decide if a flower in the supplier's greenhouse are ready to deliver (75% chance)
+		// EVENT #2: Randomly decide if a flower in the supplier's greenhouse are ready to deliver (75% chance)
 		if (eventOccurs(75)) {
 			string delivered = storeData.at("shop1")[2].front();
 			storeData.at("shop1")[2].pop_front();
+			storeData.at("shop1")[1].push_back(delivered);
 			// If so, add them to the store's inventory
-			cout << '\t' << delivered << "was"
-		}
-		// If there are customers left in the queue, randomly decide to check if their order can now be made. (50%)
-		if (eventOccurs(50)) {
-			// Give customer their order
+			cout << "\t1 " << delivered << " was added to the store inventory from the greenhouse." << endl;
 		}
 
-		// Print the changes for this interval, e.g., "Customer ordered {order} and 1 {flower} was removed from the shop's inventory"
+		// EVENT #3: If there are customers left in the queue, randomly decide to check if their order can now be made. (50%)
+		if (eventOccurs(50)) {
+			if (!storeData.at("shop1")[3].empty()) {
+				// Give customer their order if it's available
+				bool found = false;
+				for (auto it = storeData.at("shop1")[1].begin(); it != storeData.at("shop1")[1].end(); ++it) { // TODO: Fix so it's not hardcoded
+					if (*it == storeData.at("shop1")[3].front()) {
+						cout << "\tCustomer's " << *it << " order was ready and 1 " << *it <<" was removed from the store's inventory." << endl;
+						storeData.at("shop1")[1].erase(it);
+						storeData.at("shop1")[3].pop_front();
+						break;
+					}
+				}
+			}
+
+		}
+
 		// Wait or pause briefly to simulate the passage of time between intervals
 	}
 }
