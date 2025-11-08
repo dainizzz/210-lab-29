@@ -32,6 +32,7 @@ const string flowers[NUM_FLOWERS] = {
 
 // Define a function to simulate customer orders, store orders to the supplier, and supplier deliveries
 // Parameters: map of store data, number of intervals
+void runSimulation(map<string, array<list<string>, SIZE>>, int);
 
 // Define main function
 int main() {
@@ -43,7 +44,7 @@ int main() {
 	array<list<string>, SIZE> shop1data = {shopInventory, greenhouseInventory, customerQueue};
 	map<string, array<list<string>, SIZE>> shops;
 
-	shops.insert(make_pair("shop 1"),shop1data);
+	shops.insert(make_pair("shop1",shop1data));
 
 	// Open an external file to read initial data about flower shop inventory and greenhouse inventory
 	ifstream infile("flower inventory.txt");
@@ -52,25 +53,15 @@ int main() {
 		while (infile >> tempLoc) {
 			infile >> tempFlower;
 			if (tempLoc == "shop")
-				shopData[1].push_back(tempFlower);
+				shops.at("shop1")[1].push_back(tempFlower);
 			else
-				shopData[2].push_back(tempFlower);
+				shops.at("shop1")[2].push_back(tempFlower);
 		}
 		infile.close();
 	} else {
 		// If file does not open, print an error and exit
 		cout << "Error opening file." << endl;
 	}
-
-	for (string flower: data[1]) {
-		cout << flower << " ";
-	}
-
-	for (string flower: greenhouseInventory) {
-		cout << flower << " ";
-	}
-
-	//
 
 	// Begin a time-based simulation for running the flower shop
 	// for 35 time intervals (i.e. hours shop is open during the week)
@@ -85,15 +76,20 @@ int main() {
 }
 
 // Define simulation function
-// For n number of time periods
-// Randomly decide if a customer will arrive
-// If they arrive, randomly decide what they order
-// If the flowers needed for the customer's order are available, remove the flowers from the shop's
-// inventory
-// Otherwise, add the customer to the queue and the necessary flowers for completing their order to the
-// end of the supplier's greenhouse list
-// Randomly decide if flowers in the supplier's greenhouse are ready to deliver
-// If so, add them to the store's inventory
-// If there are customers left in the queue, randomly decide if their order can now be made.
-// Print the changes for this interval, e.g., "Customer ordered {order} and {flowers} were removed from the shop's inventory"
-// Wait or pause briefly to simulate the passage of time between intervals
+void runSimulation(map<string, array<list<string>, SIZE>> storeData, int intervals) {
+	// For n number of time periods
+	for (int i = 0; i < intervals; i++) {
+		cout << "Interval #" << i + 1 << ':' << endl;
+		// Randomly decide if a customer will arrive
+			// If they arrive, randomly decide what they order
+				// If the flowers needed for the customer's order are available, remove the flowers from the shop's
+				// inventory
+			// Otherwise, add the customer to the queue and the necessary flowers for completing their order to the
+			// end of the supplier's greenhouse list
+		// Randomly decide if flowers in the supplier's greenhouse are ready to deliver
+			// If so, add them to the store's inventory
+		// If there are customers left in the queue, randomly decide if their order can now be made.
+		// Print the changes for this interval, e.g., "Customer ordered {order} and {flowers} were removed from the shop's inventory"
+		// Wait or pause briefly to simulate the passage of time between intervals
+	}
+}
