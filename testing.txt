@@ -1,0 +1,43 @@
+To test the functionality of my simulation function, I will create a unit test where every event that can occur in the
+simulation has a 100% chance of occurring. I will add test data to the map and print out the contents before and
+after the simulation occurs to make sure that the code inside each event is executing as intended.
+************************************************************************************************************************
+UNIT TEST DRIVER PROGRAM
+************************************************************************************************************************
+void testSimulationEvents() {
+	list<string> shopInventory = {"Rose", "Tulip", "Lily",};
+	list<string> greenhouseInventory = {"Chrysanthemum", "Peony", "Hydrangea"};
+	list<string> customerOrderQueue = {"Rose"};
+	array<list<string>, SIZE> testShopData = {shopInventory, greenhouseInventory, customerOrderQueue};
+	map<string, array<list<string>, SIZE> > shops;
+	shops.insert(make_pair("Test Shop", testShopData));
+
+	// PRINT TEST DATA BEFORE
+	cout << "Test Shop data before simulation:" << endl;
+	cout << "\t Shop inventory: ";
+	for (string flower : shops.at("Test Shop")[0])
+		cout << flower << " ";
+	cout << "\n\t Greenhouse inventory: ";
+	for (string flower : shops.at("Test Shop")[1])
+		cout << flower << " ";
+	cout << "\n\t Customer order queue: ";
+	for (string flower : shops.at("Test Shop")[2])
+		cout << flower << " ";
+	cout << endl << endl;
+
+	// Testing each event occurring in an interval to make sure all events work correctly
+	runSimulation(shops, 1, 100, 100, 100);
+
+	// PRINT TEST DATA AFTER
+	cout << "\n\nTest Shop data after simulation:" << endl;
+	cout << "\n\t Shop inventory: ";
+	for (string flower : shops.at("Test Shop")[0])
+		cout << flower << " ";
+	cout << "\n\t Greenhouse inventory: ";
+	for (string flower : shops.at("Test Shop")[1])
+		cout << flower << " ";
+	cout << "\n\t Customer order queue: ";
+	for (string flower : shops.at("Test Shop")[2])
+		cout << flower << " ";
+	cout << endl;
+}
