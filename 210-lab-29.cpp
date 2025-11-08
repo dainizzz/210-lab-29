@@ -1,9 +1,10 @@
-// COMSC-210 | Lab 29 | Dainiz Almazan
+// COMSC-210 | Lab 30 | Dainiz Almazan
 // IDE used: CLion
 
 // Include necessary headers for file handling, data structures, etc.
 #include <map>
 #include <array>
+#include <fstream>
 #include <list>
 #include <string>
 #include <iostream>
@@ -25,6 +26,21 @@ int main () {
 	array<list<string>, SIZE> data = {shopInventory, greenhouseInventory, customerQueue};
 
 	// Open an external file to read initial data about flower shop inventory and greenhouse inventory
+	ifstream infile("flower inventory.txt");
+	string tempLoc, tempFlower;
+	if (infile.good()) {
+		while (infile >> tempLoc) {
+			infile >> tempFlower;
+			if (tempLoc == "shop")
+				shopInventory.push_back(tempFlower);
+			else
+				greenhouseInventory.push_back(tempFlower);
+		}
+		infile.close();
+	}else {
+
+	}
+
 		// If file does not open, print an error and exit
 
 	// Begin a time-based simulation for running the flower shop
