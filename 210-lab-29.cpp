@@ -90,27 +90,40 @@ void runSimulation(map<string, array<list<string>, SIZE> > storeData, int interv
 	// For n number of time periods
 	for (int i = 0; i < intervals; i++) {
 		cout << "Interval #" << i + 1 << ':' << endl;
-		// Randomly decide if a customer will arrive (50% chance)
+
+		// EVENT #1: Randomly decide if a customer will arrive (50% chance)
 		if (eventOccurs(50)) {
 			// If they arrive, randomly decide what they order
 			string order = getRandomFlower();
+			bool found = false;
 			// If the flowers needed for the customer's order are available, remove the flowers from the shop's
 			// inventory
 			for (auto it = storeData.at("shop1")[1].begin(); it != storeData.at("shop1")[1].end(); ++it) { // TODO: Fix so it's not hardcoded
 				if (*it == order) {
 					cout << "\tCustomer ordered " << order << " and " << *it << " was removed from the store's inventory." << endl;
-					//remove
+					storeData.at("shop1")[1].erase(it);
+					found = true;
+					break;
 				}
 			}
-			// Otherwise, add the customer to the queue and the flower needed for completing their order to the
-			// end of the supplier's greenhouse list
+			if (!found) {
+				// Otherwise, add the customer to the queue and the flower needed for completing their order to the
+				// end of the supplier's greenhouse list
+				cout << "\tCustomer ordered " << order << " and it was not in stock. A request has been made to the supplier and the customer has been added to the queue" << endl;
+				storeData.at("shop1")[2].push_back(order);
+				storeData.at("shop1")[3].push_back(order);
+			}
 		}
-		// Randomly decide if flowers in the supplier's greenhouse are ready to deliver (30% chance)
-		if (eventOccurs(30)) {
+
+		// EVENT  #2: Randomly decide if a flower in the supplier's greenhouse are ready to deliver (75% chance)
+		if (eventOccurs(75)) {
+			string delivered = storeData.at("shop1")[2].front();
+			storeData.at("shop1")[2].pop_front();
 			// If so, add them to the store's inventory
+			cout << '\t' << delivered << "was"
 		}
-		// If there are customers left in the queue, randomly decide to check if their order can now be made. (70%)
-		if (eventOccurs(70)) {
+		// If there are customers left in the queue, randomly decide to check if their order can now be made. (50%)
+		if (eventOccurs(50)) {
 			// Give customer their order
 		}
 
