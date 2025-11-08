@@ -63,11 +63,9 @@ int main() {
 		cout << "Error opening file." << endl;
 	}
 
-	testSimulationEvents();
-
 	// EVENT #1: Randomly decide if a customer will arrive (75% chance)
 	// EVENT #2: Randomly decide if a flower in the supplier's greenhouse are ready to deliver (25% chance)
-	// // EVENT #3: If there are customers in the queue, randomly decide to check if their order is ready (60% chance)
+	// EVENT #3: If there are customers in the queue, randomly decide to check if their order is ready (60% chance)
 	cout << "Beginning a simulation for 35 intervals (i.e. hours shop is open during a week):" << endl;
 	runSimulation(shops, 3, 75, 25, 60);
 
@@ -163,9 +161,31 @@ void testSimulationEvents() {
 	shops.insert(make_pair("Test Shop", testShopData));
 
 	// PRINT DATA BEFORE
+	cout << "Test Shop data before simulation:" << endl;
+	cout << "\t Shop inventory: ";
+	for (string flower : shops.at("Test Shop")[0])
+		cout << flower << " ";
+	cout << "\n\t Greenhouse inventory: ";
+	for (string flower : shops.at("Test Shop")[1])
+		cout << flower << " ";
+	cout << "\n\t Customer order queue: ";
+	for (string flower : shops.at("Test Shop")[2])
+		cout << flower << " ";
+	cout << endl << endl;
 
 	// Testing each event occurring in an interval to make sure all events work correctly
 	runSimulation(shops, 1, 100, 100, 100);
 
-	// PRINT OUT AFTER
+	// PRINT DATA AFTER
+	cout << "\n\nTest Shop data after simulation:" << endl;
+	cout << "\n\t Shop inventory: ";
+	for (string flower : shops.at("Test Shop")[0])
+		cout << flower << " ";
+	cout << "\n\t Greenhouse inventory: ";
+	for (string flower : shops.at("Test Shop")[1])
+		cout << flower << " ";
+	cout << "\n\t Customer order queue: ";
+	for (string flower : shops.at("Test Shop")[2])
+		cout << flower << " ";
+	cout << endl;
 }
