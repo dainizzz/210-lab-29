@@ -39,6 +39,11 @@ bool eventOccurs(int);
 // testSimulationEvents() performs a unit test of the runSimulation() function
 void testSimulationEvents();
 
+// printStoreReport() outputs a summary of the simulation's events for a particular store
+// arguments: the store's name as a string, int values representing how many times each of the three events occurred
+// returns: nothing
+void printStoreSummary(string, int, int, int);
+
 // Define main function
 int main() {
 	srand(time(0));
@@ -198,4 +203,11 @@ void testSimulationEvents() {
 	for (string flower : shops.at("Test Shop")[2])
 		cout << flower << " ";
 	cout << endl;
+}
+
+void printStoreSummary(string storeName, int numEvent1, int numEvent2, int numEvent3) {
+	cout << "SUMMARY FOR " << uppercase << storeName << ':' << endl;
+	cout << "Times customer arrived and their order was in stock: " << numEvent1 << endl;
+	cout << "Times an order was received from the supplier: " << numEvent2 << endl;
+	cout << "Times a customer waiting in the queue was helped: " << numEvent3 << endl;
 }
