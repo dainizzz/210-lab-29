@@ -88,11 +88,11 @@ void runSimulation(map<string, array<list<string>, SIZE> > &shops, int intervals
 		cout << shop.first << " simulation:" << endl;
 		for (int i = 0; i < intervals; i++) {
 			cout << "Interval #" << i + 1 << ':' << endl;
-			bool anyEventOccured = false;
+			bool anyEventOccurred = false;
 
 			// EVENT #1: Randomly decide if a customer will arrive
 			if (eventOccurs(event1Probability)) {
-				anyEventOccured = true;
+				anyEventOccurred = true;
 				string order = getRandomFlower();
 				bool found = false;
 				auto it = shop.second[0].begin();
@@ -118,7 +118,7 @@ void runSimulation(map<string, array<list<string>, SIZE> > &shops, int intervals
 
 			// EVENT #2: Randomly decide if a flower in the supplier's greenhouse are ready to deliver
 			if (eventOccurs(event2Probability) && !shop.second[1].empty()) {
-				anyEventOccured = true;
+				anyEventOccurred = true;
 				string delivered = shop.second[1].front();
 				shop.second[0].push_back(delivered);
 				shop.second[1].pop_front();
@@ -129,7 +129,7 @@ void runSimulation(map<string, array<list<string>, SIZE> > &shops, int intervals
 			// EVENT #3: If there are customers in the queue, randomly decide to check if their order is ready
 			if (eventOccurs(event3Probability)) {
 				if (!shop.second[2].empty()) {
-					anyEventOccured = true;
+					anyEventOccurred = true;
 					// Give customer their order if it's available
 					for (auto it = shop.second[0].begin(); it != shop.second[0].end(); ++it) {
 						if (*it == shop.second[2].front()) {
@@ -144,7 +144,7 @@ void runSimulation(map<string, array<list<string>, SIZE> > &shops, int intervals
 				}
 			}
 
-			if (!anyEventOccured)
+			if (!anyEventOccurred)
 				cout << "\tNothing happened." << endl;
 
 			// Wait or pause briefly to simulate the passage of time between intervals
