@@ -1,7 +1,6 @@
-// COMSC-210 | Lab 30 | Dainiz Almazan
+// COMSC-210 | Lab 31 | Dainiz Almazan
 // IDE used: CLion
 
-// Include necessary headers for file handling, data structures, etc.
 #include <map>
 #include <array>
 #include <fstream>
@@ -20,19 +19,24 @@ const string flowers[NUM_FLOWERS] = {
 	"Bluebell", "Alstroemeria", "Iris", "Freesia", "Ranunculus",
 };
 
-// Define a function to simulate customer orders, store orders to the supplier, and supplier deliveries
-// Parameters: map of store data, number of intervals, probability of event 1, probability of event 2,
-// probability of event 3
+// runSimulation() simulates three events for a specified number of intervals: 1) a customer makes an order, 2) an item
+//		is delivered from the supplier to the shop, 3) a customer in the queue is helped
+// arguments: map of store data, number of intervals to run the simulation, probability of event 1 (0-100), probability
+//		of event 2 (0-100), probability of event 3 (0-100)
+// returns: nothing
 void runSimulation(map<string, array<list<string>, SIZE> > &, int, int, int, int);
 
-// Returns a randomly selected flower from the flowers array.
+// getRandomFlower() randomly selects a flower from the flowers array and returns it.
+// arguments: none
+// returns: a string flower name
 string getRandomFlower();
 
-// Returns a bool representing whether an event occurs
-// Parameters: an int representing the percent chance of an event occurring
+// eventOccurs() determines whether an event with a given probability occurs or not
+// arguments: an int value 0-100 representing the percent chance of an event occurring
+// returns: a bool value representing whether the event occurs
 bool eventOccurs(int);
 
-// Performs a unit test of the runSimulation() function
+// testSimulationEvents() performs a unit test of the runSimulation() function
 void testSimulationEvents();
 
 // Define main function
@@ -41,10 +45,13 @@ int main() {
 
 	// Initialize a map to store the flower shop's data: customers who come in and what they order, flowers currently in
 	// the flower shop inventory, and flowers growing in the supplier's greenhouse.
-	array<list<string>, SIZE> shop1data = {};
 	map<string, array<list<string>, SIZE> > shops;
 
+	array<list<string>, SIZE> shop1data = {};
 	shops.insert(make_pair("Shop 1", shop1data));
+
+	array<list<string>, SIZE> shop2data = {};
+	shops.insert(make_pair("Shop 2", shop2data));
 
 	// Open an external file to read initial data about flower shop inventory and greenhouse inventory
 	ifstream infile("flower inventory.txt");
@@ -52,10 +59,14 @@ int main() {
 	if (infile.good()) {
 		while (infile >> tempLoc) {
 			infile >> tempFlower;
-			if (tempLoc == "shop")
+			if (tempLoc == "shop") {
 				shops.at("Shop 1")[0].push_back(tempFlower);
-			else
+				shops.at("Shop 2")[0].push_back(tempFlower);
+			}
+			else {
 				shops.at("Shop 1")[1].push_back(tempFlower);
+				shops.at("Shop 2")[1].push_back(tempFlower);
+			}
 		}
 		infile.close();
 	} else {
@@ -67,12 +78,11 @@ int main() {
 	// EVENT #2: Randomly decide if a flower in the supplier's greenhouse are ready to deliver (25% chance)
 	// EVENT #3: If there are customers in the queue, randomly decide to check if their order is ready (60% chance)
 	cout << "Beginning a simulation for 35 intervals (i.e. hours shop is open during a week):" << endl;
-	runSimulation(shops, 3, 75, 25, 60);
+	runSimulation(shops, 35, 75, 25, 60);
 
 	return 0;
 }
 
-// Define simulation function
 void runSimulation(map<string, array<list<string>, SIZE> > &shops, int intervals, int event1Probability, int event2Probability, int event3Probability) {
 	for (auto &shop: shops) {
 		cout << shop.first << " simulation:" << endl;
