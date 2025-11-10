@@ -90,6 +90,11 @@ int main() {
 
 void runSimulation(map<string, array<list<string>, SIZE> > &shops, int intervals, int event1Probability, int event2Probability, int event3Probability) {
 	for (auto &shop: shops) {
+		// Variables for keeping track of how many times each event occurred
+		int event1 = 0;
+		int event2 = 0;
+		int event3 = 0;
+
 		cout << shop.first << " simulation:" << endl;
 		for (int i = 0; i < intervals; i++) {
 			cout << "Interval #" << i + 1 << ':' << endl;
@@ -107,6 +112,7 @@ void runSimulation(map<string, array<list<string>, SIZE> > &shops, int intervals
 								" was removed from the store's inventory." << endl;
 						shop.second[0].erase(it);
 						found = true;
+						event1++;
 						break;
 					}
 					++it;
@@ -127,6 +133,7 @@ void runSimulation(map<string, array<list<string>, SIZE> > &shops, int intervals
 				string delivered = shop.second[1].front();
 				shop.second[0].push_back(delivered);
 				shop.second[1].pop_front();
+				event2++;
 				// If so, add them to the store's inventory
 				cout << "\t1 " << delivered << " was added to the store inventory from the greenhouse." << endl;
 			}
@@ -134,7 +141,6 @@ void runSimulation(map<string, array<list<string>, SIZE> > &shops, int intervals
 			// EVENT #3: If there are customers in the queue, randomly decide to check if their order is ready
 			if (eventOccurs(event3Probability)) {
 				if (!shop.second[2].empty()) {
-					anyEventOccurred = true;
 					// Give customer their order if it's available
 					for (auto it = shop.second[0].begin(); it != shop.second[0].end(); ++it) {
 						if (*it == shop.second[2].front()) {
@@ -143,6 +149,8 @@ void runSimulation(map<string, array<list<string>, SIZE> > &shops, int intervals
 									" was removed from the store's inventory." << endl;
 							shop.second[0].erase(it);
 							shop.second[2].pop_front();
+							anyEventOccurred = true;
+							event3++;
 							break;
 						}
 					}
@@ -155,6 +163,8 @@ void runSimulation(map<string, array<list<string>, SIZE> > &shops, int intervals
 			// Wait or pause briefly to simulate the passage of time between intervals
 			this_thread::sleep_for(chrono::milliseconds(500));
 		}
+
+		printStoreSummary(shop.first, event1, event2, event3);
 	}
 }
 
@@ -206,8 +216,8 @@ void testSimulationEvents() {
 }
 
 void printStoreSummary(string storeName, int numEvent1, int numEvent2, int numEvent3) {
-	cout << "SUMMARY FOR " << uppercase << storeName << ':' << endl;
-	cout << "Times customer arrived and their order was in stock: " << numEvent1 << endl;
-	cout << "Times an order was received from the supplier: " << numEvent2 << endl;
-	cout << "Times a customer waiting in the queue was helped: " << numEvent3 << endl;
+	cout << "Summary for " << uppercase << storeName << ':' << endl;
+	cout << "\t- Times customer arrived and their order was in stock: " << numEvent1 << endl;
+	cout << "\t- Times an order was received from the supplier: " << numEvent2 << endl;
+	cout << "\t- Times a customer waiting in the queue was helped: " << numEvent3 << endl << endl;
 }
