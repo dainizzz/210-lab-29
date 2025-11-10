@@ -1,7 +1,6 @@
-// COMSC-210 | Lab 30 | Dainiz Almazan
+// COMSC-210 | Lab 31 | Dainiz Almazan
 // IDE used: CLion
 
-// Include necessary headers for file handling, data structures, etc.
 #include <map>
 #include <array>
 #include <fstream>
@@ -20,20 +19,30 @@ const string flowers[NUM_FLOWERS] = {
 	"Bluebell", "Alstroemeria", "Iris", "Freesia", "Ranunculus",
 };
 
-// Define a function to simulate customer orders, store orders to the supplier, and supplier deliveries
-// Parameters: map of store data, number of intervals, probability of event 1, probability of event 2,
-// probability of event 3
+// runSimulation() simulates three events for a specified number of intervals: 1) a customer makes an order, 2) an item
+//		is delivered from the supplier to the shop, 3) a customer in the queue is helped
+// arguments: map of store data, number of intervals to run the simulation, probability of event 1 (0-100), probability
+//		of event 2 (0-100), probability of event 3 (0-100)
+// returns: nothing
 void runSimulation(map<string, array<list<string>, SIZE> > &, int, int, int, int);
 
-// Returns a randomly selected flower from the flowers array.
+// getRandomFlower() randomly selects a flower from the flowers array and returns it.
+// arguments: none
+// returns: a string flower name
 string getRandomFlower();
 
-// Returns a bool representing whether an event occurs
-// Parameters: an int representing the percent chance of an event occurring
+// eventOccurs() determines whether an event with a given probability occurs or not
+// arguments: an int value 0-100 representing the percent chance of an event occurring
+// returns: a bool value representing whether the event occurs
 bool eventOccurs(int);
 
-// Performs a unit test of the runSimulation() function
+// testSimulationEvents() performs a unit test of the runSimulation() function
 void testSimulationEvents();
+
+// printStoreReport() outputs a summary of the simulation's events for a particular store
+// arguments: the store's name as a string, int values representing how many times each of the three events occurred
+// returns: nothing
+void printStoreSummary(string, int, int, int);
 
 // Define main function
 int main() {
@@ -41,10 +50,13 @@ int main() {
 
 	// Initialize a map to store the flower shop's data: customers who come in and what they order, flowers currently in
 	// the flower shop inventory, and flowers growing in the supplier's greenhouse.
-	array<list<string>, SIZE> shop1data = {};
 	map<string, array<list<string>, SIZE> > shops;
 
+	array<list<string>, SIZE> shop1data = {};
 	shops.insert(make_pair("Shop 1", shop1data));
+
+	array<list<string>, SIZE> shop2data = {};
+	shops.insert(make_pair("Shop 2", shop2data));
 
 	// Open an external file to read initial data about flower shop inventory and greenhouse inventory
 	ifstream infile("flower inventory.txt");
@@ -52,10 +64,14 @@ int main() {
 	if (infile.good()) {
 		while (infile >> tempLoc) {
 			infile >> tempFlower;
-			if (tempLoc == "shop")
+			if (tempLoc == "shop") {
 				shops.at("Shop 1")[0].push_back(tempFlower);
-			else
+				shops.at("Shop 2")[0].push_back(tempFlower);
+			}
+			else {
 				shops.at("Shop 1")[1].push_back(tempFlower);
+				shops.at("Shop 2")[1].push_back(tempFlower);
+			}
 		}
 		infile.close();
 	} else {
@@ -67,22 +83,26 @@ int main() {
 	// EVENT #2: Randomly decide if a flower in the supplier's greenhouse are ready to deliver (25% chance)
 	// EVENT #3: If there are customers in the queue, randomly decide to check if their order is ready (60% chance)
 	cout << "Beginning a simulation for 35 intervals (i.e. hours shop is open during a week):" << endl;
-	runSimulation(shops, 3, 75, 25, 60);
+	runSimulation(shops, 35, 75, 25, 60);
 
 	return 0;
 }
 
-// Define simulation function
 void runSimulation(map<string, array<list<string>, SIZE> > &shops, int intervals, int event1Probability, int event2Probability, int event3Probability) {
 	for (auto &shop: shops) {
+		// Variables for keeping track of how many times each event occurred
+		int event1 = 0;
+		int event2 = 0;
+		int event3 = 0;
+
 		cout << shop.first << " simulation:" << endl;
 		for (int i = 0; i < intervals; i++) {
 			cout << "Interval #" << i + 1 << ':' << endl;
-			bool anyEventOccured = false;
+			bool anyEventOccurred = false;
 
 			// EVENT #1: Randomly decide if a customer will arrive
 			if (eventOccurs(event1Probability)) {
-				anyEventOccured = true;
+				anyEventOccurred = true;
 				string order = getRandomFlower();
 				bool found = false;
 				auto it = shop.second[0].begin();
@@ -92,6 +112,7 @@ void runSimulation(map<string, array<list<string>, SIZE> > &shops, int intervals
 								" was removed from the store's inventory." << endl;
 						shop.second[0].erase(it);
 						found = true;
+						event1++;
 						break;
 					}
 					++it;
@@ -108,10 +129,11 @@ void runSimulation(map<string, array<list<string>, SIZE> > &shops, int intervals
 
 			// EVENT #2: Randomly decide if a flower in the supplier's greenhouse are ready to deliver
 			if (eventOccurs(event2Probability) && !shop.second[1].empty()) {
-				anyEventOccured = true;
+				anyEventOccurred = true;
 				string delivered = shop.second[1].front();
 				shop.second[0].push_back(delivered);
 				shop.second[1].pop_front();
+				event2++;
 				// If so, add them to the store's inventory
 				cout << "\t1 " << delivered << " was added to the store inventory from the greenhouse." << endl;
 			}
@@ -119,7 +141,6 @@ void runSimulation(map<string, array<list<string>, SIZE> > &shops, int intervals
 			// EVENT #3: If there are customers in the queue, randomly decide to check if their order is ready
 			if (eventOccurs(event3Probability)) {
 				if (!shop.second[2].empty()) {
-					anyEventOccured = true;
 					// Give customer their order if it's available
 					for (auto it = shop.second[0].begin(); it != shop.second[0].end(); ++it) {
 						if (*it == shop.second[2].front()) {
@@ -128,18 +149,22 @@ void runSimulation(map<string, array<list<string>, SIZE> > &shops, int intervals
 									" was removed from the store's inventory." << endl;
 							shop.second[0].erase(it);
 							shop.second[2].pop_front();
+							anyEventOccurred = true;
+							event3++;
 							break;
 						}
 					}
 				}
 			}
 
-			if (!anyEventOccured)
+			if (!anyEventOccurred)
 				cout << "\tNothing happened." << endl;
 
 			// Wait or pause briefly to simulate the passage of time between intervals
 			this_thread::sleep_for(chrono::milliseconds(500));
 		}
+
+		printStoreSummary(shop.first, event1, event2, event3);
 	}
 }
 
@@ -188,4 +213,11 @@ void testSimulationEvents() {
 	for (string flower : shops.at("Test Shop")[2])
 		cout << flower << " ";
 	cout << endl;
+}
+
+void printStoreSummary(string storeName, int numEvent1, int numEvent2, int numEvent3) {
+	cout << "Summary for " << uppercase << storeName << ':' << endl;
+	cout << "\t- Times customer arrived and their order was in stock: " << numEvent1 << endl;
+	cout << "\t- Times an order was received from the supplier: " << numEvent2 << endl;
+	cout << "\t- Times a customer waiting in the queue was helped: " << numEvent3 << endl << endl;
 }

@@ -1,0 +1,9 @@
+1. Bug:
+    Index error causing "Process finished with exit code -1073741819 (0xC0000005)"
+Solution process:
+    I didn't realize at first that I was using 1-based indexes in the majority of the simulation function, and was
+    confused about the message. I didn't find anything helpful after looking up the error message, so I placed
+    breakpoints in the if statement for each of the three events, then looked at the variables in the debugger to see
+    what could be going wrong. After much trial and error, I finally noticed that I was referring to the wrong nested
+    lists & trying to access a list at index 3 in a 3-element array, and went back and changed everything to use a
+    0-based index, which fixed the problem.
